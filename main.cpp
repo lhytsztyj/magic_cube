@@ -51,8 +51,62 @@ void Init()
 	}
 }
 
-void bottom_fetch(const PI &from, int to)
+int diff(int p1, int p2)
 {
+	p1 = p1==UU ? 0 : p1==RR ? 1 : p1==DD ? 2 : p1==LL : 3;
+	p2 = p2==UU ? 0 : p2==RR ? 1 : p2==DD ? 2 : p2==LL : 3;
+	return p2-p1;
+}
+
+// Spin(face, t) : Spin `face` clock-wise `t` times
+
+int bottom_avoid(int face, int to)
+{
+	int from = 
+		near(BOTTOM, UU)==face ? UU :
+		near(BOTTOM, RR)==face ? RR :
+		near(BOTTOM, DD)==face ? DD :
+			LL;
+	int d = diff(to, from);
+	Spin(BOTTOM, d);
+	return d;
+}
+
+void bottom_fetch_edge(const PI &from, int to)
+{
+	int face = from.fi, pos = from.se;
+	if (face==BOTTOM && pos==to) return;
+	if (face==BOTTOM)
+	{
+		Spin(near(BOTTOM,_pos), 1);
+		bottom_fetch_edge(bottom_find_edge(to), to);
+	} else
+	if (face!=UP && pos==DD)
+	{
+		Spin(face, 1);
+		bottom_fetch_edge(bottom_find_edge(to), to);
+	} else
+	if (face!=UP && pos==UU)
+	{
+		int avoided = bottom_avoid(face, to);
+		Spin(face, 1);
+		Spin(BOTTOM, -avoided);
+		bottom_fetch_edge(bottom_find_edge(to), to);
+	} else
+	if (face!=UP)
+	{
+		int avoided = bottom_avoid(face, to);
+		if (pos==LL)
+			Spin(near(face,LL), 1);
+		else
+			Spin(near(face,RR), -1);
+		Spin(BOTTOM, -avoided);
+	} else
+	{
+		int avoided = bottom_avoid(near(UP, pos), to);
+		Spin(near(UP, pos), 2);
+		Spin(BOTTOM, -avoided);
+	}
 }
 
 void bottom_find_edge(int dir)
@@ -65,6 +119,12 @@ void bottom_find_edge(int dir)
 	if (f[UP][DD]==bc && f[FRONT][UU]==sc) return PI(UP,DD);
 
 	// TODO: lhy
+}
+
+void bottom_fetch_corner(const &PI from, int to)
+{
+	int face = from.fi, pos = from.se;
+	
 }
 
 void bottom_find_corner(int dir1, int dir2)
@@ -81,15 +141,15 @@ void bottom_find_corner(int dir1, int dir2)
 
 void SolveFloor()
 {
-	bottom_fetch(bottom_find_edge(UU), UU);
-	bottom_fetch(bottom_find_edge(LL), LL);
-	bottom_fetch(bottom_find_edge(DD), DD);
-	bottom_fetch(bottom_find_edge(RR), RR);
+	bottom_fetch_edge(bottom_find_edge(UU), UU);
+	bottom_fetch_edge(bottom_find_edge(LL), LL);
+	bottom_fetch_edge(bottom_find_edge(DD), DD);
+	bottom_fetch_edge(bottom_find_edge(RR), RR);
 
-	bottom_fetch(bottom_find_corner(UU,RR), UU|RR);
-	bottom_fetch(bottom_find_corner(RR,DD), RR|DD);
-	bottom_fetch(bottom_find_corner(DD,LL), DD|LL);
-	bottom_fetch(bottom_find_corner(LL,UU), LL|UU);
+	bottom_fetch_corner(bottom_find_corner(UU,RR), UU|RR);
+	bottom_fetch_corner(bottom_find_corner(RR,DD), RR|DD);
+	bottom_fetch_corner(bottom_find_corner(DD,LL), DD|LL);
+	bottom_fetch_corner(bottom_find_corner(LL,UU), LL|UU);
 }
 
 void Solve()
