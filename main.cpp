@@ -164,8 +164,26 @@ PI bottom_find_edge(int dir)
 	if (f[TOP][LL]==bc && f[LEFT][UU]==sc) return PI(TOP,LL);
 	if (f[TOP][RR]==bc && f[RIGHT][UU]==sc) return PI(TOP,RR);
 	if (f[TOP][DD]==bc && f[FRONT][UU]==sc) return PI(TOP,DD);
-
-	// TODO: lhy
+	if (f[FRONT][UU]==bc && f[TOP][DD]==sc) return PI(FRONT,UU);
+	if (f[LEFT][UU]==bc && f[TOP][LL]==sc) return PI(LEFT,UU);
+	if (f[BACK][UU]==bc && f[TOP][UU]==sc) return PI(BACK,UU);
+	if (f[RIGHT][UU]==bc && f[TOP][RR]==sc) return PI(RIGHT,UU);
+	if (f[FRONT][RR]==bc && f[RIGHT][LL]==sc) return PI(FRONT,RR);
+	if (f[FRONT][LL]==bc && f[LEFT][RR]==sc) return PI(FRONT,LL);
+	if (f[LEFT][RR]==bc && f[FRONT][LL]==sc) return PI(LEFT,RR);
+	if (f[LEFT][LL]==bc && f[BACK][RR]==sc) return PI(LEFT,LL);
+	if (f[BACK][RR]==bc && f[LEFT][LL]==sc) return PI(BACK,RR);
+	if (f[BACK][LL]==bc && f[RIGHT][RR]==sc) return PI(BACK,LL);
+	if (f[RIGHT][RR]==bc && f[BACK][LL]==sc) return PI(RIGHT,RR);
+	if (f[RIGHT][LL]==bc && f[FRONT][RR]==sc) return PI(RIGHT,LL);
+	if (f[FRONT][DD]==bc && f[BOTTOM][UU]==sc) return PI(FRONT,DD);
+	if (f[LEFT][DD]==bc && f[BOTTOM][LL]==sc) return PI(LEFT,DD);
+	if (f[BACK][DD]==bc && f[BOTTOM][DD]==sc) return PI(BACK,DD);
+	if (f[RIGHT][DD]==bc && f[BOTTOM][RR]==sc) return PI(RIGHT,DD);
+	if (f[BOTTOM][UU]==bc && f[FRONT][DD]==sc) return PI(BOTTOM,UU);
+	if (f[BOTTOM][LL]==bc && f[LEFT][DD]==sc) return PI(BOTTOM,LL);
+	if (f[BOTTOM][DD]==bc && f[BACK][DD]==sc) return PI(BOTTOM,DD);
+	if (f[BOTTOM][RR]==bc && f[RIGHT][DD]==sc) return PI(BOTTOM,RR);
 }
 
 void bottom_fetch_edge(const PI &from, int to)
@@ -213,8 +231,26 @@ PI bottom_find_corner(int dir1, int dir2)
 	if (f[TOP][RR|DD]==bc && f[RIGHT][LL|UU]==sc1 && f[FRONT][RR|UU]==sc2) return PI(TOP,RR|DD);
 	if (f[TOP][LL|DD]==bc && f[FRONT][LL|UU]==sc1 && f[LEFT][RR|UU]==sc2) return PI(TOP,LL|DD);
 	if (f[TOP][LL|UU]==bc && f[RIGHT][LL|UU]==sc1 && f[BACK][RR|UU]==sc2) return PI(TOP,LL|UU);
-
-	// TODO: lhy
+	if (f[FRONT][RR|UU]==bc && f[TOP][RR|DD]==sc1 && f[RIGHT][LL|UU]==sc2) return PI(FRONT,RR|UU);
+	if (f[FRONT][RR|DD]==bc && f[BOTTOM][RR|UU]==sc1 && f[RIGHT][LL|DD]==sc2) return PI(FRONT,RR|DD);
+	if (f[FRONT][LL|UU]==bc && f[TOP][LL|DD]==sc1 && f[LEFT][RR|UU]==sc2) return PI(FRONT,LL|UU);
+	if (f[FRONT][LL|DD]==bc && f[BOTTOM][LL|UU]==sc1 && f[LEFT][RR|DD]==sc2) return PI(FRONT,LL|DD);
+	if (f[LEFT][RR|UU]==bc && f[TOP][LL|DD]==sc1 && f[FRONT][LL|UU]==sc2) return PI(LEFT,RR|UU);
+	if (f[LEFT][RR|DD]==bc && f[BOTTOM][LL|UU]==sc1 && f[FRONT][LL|DD]==sc2) return PI(LEFT,RR|DD);
+	if (f[LEFT][LL|UU]==bc && f[TOP][LL|UU]==sc1 && f[BACK][RR|UU]==sc2) return PI(LEFT,LL|UU);
+	if (f[LEFT][LL|DD]==bc && f[BOTTOM][LL|DD]==sc1 && f[BACK][RR|DD]==sc2) return PI(LEFT,LL|DD);
+	if (f[BACK][RR|UU]==bc && f[TOP][LL|UU]==sc1 && f[LEFT][LL|UU]==sc2) return PI(BACK,RR|UU);
+	if (f[BACK][RR|DD]==bc && f[BOTTOM][LL|DD]==sc1 && f[LEFT][LL|DD]==sc2) return PI(BACK,RR|DD);
+	if (f[BACK][LL|UU]==bc && f[TOP][RR|UU]==sc1 && f[RIGHT][RR|UU]==sc2) return PI(BACK,LL|UU);
+	if (f[BACK][LL|DD]==bc && f[BOTTOM][RR|DD]==sc1 && f[RIGHT][RR|DD]==sc2) return PI(BACK,LL|DD);
+	if (f[RIGHT][RR|UU]==bc && f[TOP][RR|UU]==sc1 && f[BACK][LL|UU]==sc2) return PI(RIGHT,RR|UU);
+	if (f[RIGHT][RR|DD]==bc && f[BOTTOM][RR|DD]==sc1 && f[BACK][LL|DD]==sc2) return PI(RIGHT,RR|DD);
+	if (f[RIGHT][LL|UU]==bc && f[TOP][RR|DD]==sc1 && f[FRONT][RR|UU]==sc2) return PI(RIGHT,LL|UU);
+	if (f[RIGHT][LL|DD]==bc && f[BOTTOM][RR|UU]==sc1 && f[FRONT][RR|DD]==sc2) return PI(RIGHT,LL|DD);
+	if (f[BOTTOM][RR|UU]==bc && f[FRONT][RR|DD]==sc1 && f[RIGHT][LL|DD]==sc2) return PI(BOTTOM,RR|UU);
+	if (f[BOTTOM][RR|DD]==bc && f[BACK][LL|DD]==sc1 && f[RIGHT][RR|DD]==sc2) return PI(BOTTOM,RR|DD);
+	if (f[BOTTOM][LL|UU]==bc && f[FRONT][LL|DD]==sc1 && f[LEFT][RR|DD]==sc2) return PI(BOTTOM,LL|UU);
+	if (f[BOTTOM][LL|DD]==bc && f[BACK][RR|DD]==sc1 && f[LEFT][LL|DD]==sc2) return PI(BOTTOM,LL|DD);
 }
 
 void bottom_fetch_corner(const PI &from, int to)
