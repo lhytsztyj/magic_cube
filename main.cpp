@@ -64,7 +64,7 @@ void Init()
 	Output();
 }
 
-int near(int face, int tow)
+inline int near(int face, int tow)
 {
 	switch (face)
 	{
@@ -149,19 +149,20 @@ void Spin(int face, int t)
 	Output();
 }
 
-void Spin(const char *s)
+void Spin(const char *s, int rotateLeft = 0)
 {
+	rotateLeft = (rotateLeft%4+4)%4;
 	for (; *s; s++)
 		switch (*s)
 		{
-			case 'F': Spin(FRONT, 1); break;
-			case 'f': Spin(FRONT,-1); break;
-			case 'R': Spin(RIGHT, 1); break;
-			case 'r': Spin(RIGHT,-1); break;
-			case 'B': Spin(BACK , 1); break;
-			case 'b': Spin(BACK ,-1); break;
-			case 'L': Spin(LEFT , 1); break;
-			case 'l': Spin(LEFT ,-1); break;
+			case 'F': Spin((FRONT+rotateLeft)%4, 1); break;
+			case 'f': Spin((FRONT+rotateLeft)%4,-1); break;
+			case 'R': Spin((RIGHT+rotateLeft)%4, 1); break;
+			case 'r': Spin((RIGHT+rotateLeft)%4,-1); break;
+			case 'B': Spin((BACK +rotateLeft)%4, 1); break;
+			case 'b': Spin((BACK +rotateLeft)%4,-1); break;
+			case 'L': Spin((LEFT +rotateLeft)%4, 1); break;
+			case 'l': Spin((LEFT +rotateLeft)%4,-1); break;
 			case 'U': Spin(UP   , 1); break;
 			case 'u': Spin(UP   ,-1); break;
 			case 'D': Spin(DOWN , 1); break;
@@ -181,10 +182,8 @@ int bottom_avoid(int face, int to)
 	return d;
 }
 
-PI bottom_find_edge(int dir)
+PI find_edge(int bc, int sc)
 {
-	int bc=f[DOWN][0], sc=f[near(DOWN,dir)][0];
-
 	if (f[UP][UU]==bc && f[BACK][UU]==sc) return PI(UP,UU);
 	if (f[UP][LL]==bc && f[LEFT][UU]==sc) return PI(UP,LL);
 	if (f[UP][RR]==bc && f[RIGHT][UU]==sc) return PI(UP,RR);
@@ -209,6 +208,16 @@ PI bottom_find_edge(int dir)
 	if (f[DOWN][LL]==bc && f[LEFT][DD]==sc) return PI(DOWN,LL);
 	if (f[DOWN][DD]==bc && f[BACK][DD]==sc) return PI(DOWN,DD);
 	if (f[DOWN][RR]==bc && f[RIGHT][DD]==sc) return PI(DOWN,RR);
+}
+
+inline PI bottom_find_edge(int dir)
+{
+	return find_edge(f[DOWN][0], f[near(DOWN,dir)][0]);
+}
+
+inline PI middle_find_edge(int f1)
+{
+	return find_edge(f[f1][0], f[near(f1,RR)][0]);
 }
 
 void bottom_fetch_edge(const PI &from, int to)
@@ -323,6 +332,33 @@ void bottom_fetch_corner(const PI &from, int to)
 	}
 }
 
+void middle_fetch_edge(const PI &from, int to)
+{
+	int face = from.fi, pos = from.se;
+	fprintf(stderr, "middle_fetch_edge(from=(face=%d,pos=%d),to=%d)\n", face, pos, to);
+	
+	if (face==to && pos==RR)
+		return;
+	if (face==UP && pos==RR && f[near(to,RR)][UU]==f[near(to,RR)][0])
+	{
+		Spin("rururURUR", to);
+		return;
+	}
+	if (face==to && pos==UU && f[to][UU]==f[to][0])
+	{
+		Spin("FUFUFufuf", to);
+		return;
+	}
+	for (int k=0, f1=FRONT, f2=RIGHT; k<4; k++, f2=f1, f1=near(f1,LL))
+		if (face==f1 && pos==RR || face==f2 && pos==LL)
+		{
+			Spin("rururURUR", k);
+			break;
+		}
+	Spin(UP, 1);
+	middle_fetch_edge(middle_find_edge(to), to);
+}
+
 void SolveFloor()
 {
 	bottom_fetch_edge(bottom_find_edge(UU), UU);
@@ -336,10 +372,18 @@ void SolveFloor()
 	bottom_fetch_corner(bottom_find_corner(LL+UU), LL+UU);
 }
 
+void SolveMiddle()
+{
+	middle_fetch_edge(middle_find_edge(FRONT), FRONT);
+	middle_fetch_edge(middle_find_edge(RIGHT), RIGHT);
+	middle_fetch_edge(middle_find_edge(BACK ), BACK );
+	middle_fetch_edge(middle_find_edge(LEFT ), LEFT );
+}
+
 void Solve()
 {
 	SolveFloor();
-
+	SolveMiddle();
 }
 
 int main()
