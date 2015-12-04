@@ -1,4 +1,5 @@
 #include<cstdio>
+#include<cctype>
 #include<cstring>
 #include<algorithm>
 using namespace std;
@@ -34,6 +35,19 @@ const PI PI_NULL(-1,-1);
 
 int f[6][16], *_f[6][3][3];
 
+int color_to_int(char c)
+{
+	switch(tolower(c))
+	{
+		case 'r': return 0;
+		case 'b': return 1;
+		case 'o': return 2;
+		case 'g': return 3;
+		case 'y': return 4;
+		case 'w': return 5;
+	}
+}
+
 void Output()
 {
 	for (int i=0; i<6; i++)
@@ -47,19 +61,26 @@ void Output()
 void Init()
 {
 	fputs("Colors:", stderr);
-	for (int i=0; i<6; i++)
-		fprintf(stderr, "%d for %s\n", i, color[i]);
+	//for (int i=0; i<6; i++)
+	//	fprintf(stderr, "%d for %s\n", i, color[i]);
 	for (int i=0; i<6; i++)
 	{
 		fprintf(stderr, "Input %s\n", name[i]);
-		scanf("%d%d%d%d%d%d%d%d%d",
+		/*scanf("%d%d%d%d%d%d%d%d%d",
 				&f[i][LL+UU],	&f[i][UU],	&f[i][RR+UU],
 				&f[i][LL],		&f[i][0],	&f[i][RR],
 				&f[i][LL+DD],	&f[i][DD],	&f[i][RR+DD]
-			 );
+			 );*/
 		_f[i][0][0] = &f[i][LL+UU],		_f[i][0][1] = &f[i][UU],	_f[i][0][2] = &f[i][RR+UU];
 		_f[i][1][0] = &f[i][LL],		_f[i][1][1] = &f[i][0],		_f[i][1][2] = &f[i][RR];
 		_f[i][2][0] = &f[i][LL+DD],		_f[i][2][1] = &f[i][DD],	_f[i][2][2] = &f[i][RR+DD];
+		for (int j=0; j<3; j++)
+			for (int k=0; k<3; k++)
+			{
+				char c;
+				scanf(" %c", &c);
+				*_f[i][j][k] = color_to_int(c);
+			}
 	}
 	Output();
 }
@@ -74,6 +95,17 @@ inline int near(int face, int tow)
 		case RIGHT : return tow==UU ? UP    : tow==LL ? FRONT : tow==RR ? BACK  : DOWN;
 		case UP    : return tow==UU ? BACK  : tow==LL ? LEFT  : tow==RR ? RIGHT : FRONT;
 		case DOWN  : return tow==UU ? FRONT : tow==LL ? LEFT  : tow==RR ? RIGHT : BACK;
+	}
+}
+
+inline int rel_pos_UP(int f1)
+{
+	switch (f1)
+	{
+		case FRONT: return DD;
+		case RIGHT: return RR;
+		case BACK: return UU;
+		case LEFT: return LL;
 	}
 }
 
@@ -339,12 +371,12 @@ void middle_fetch_edge(const PI &from, int to)
 	
 	if (face==to && pos==RR)
 		return;
-	if (face==UP && pos==RR && f[near(to,RR)][UU]==f[near(to,RR)][0])
+	if (face==UP && pos==rel_pos_UP(near(to,RR)) && f[near(to,RR)][UU]==f[near(to,RR)][0])
 	{
 		Spin("rururURUR", to);
 		return;
 	}
-	if (face==to && pos==UU && f[to][UU]==f[to][0])
+	if (face==to && pos==UU && f[UP][rel_pos_UP(to)]==f[near(to,RR)][0])
 	{
 		Spin("FUFUFufuf", to);
 		return;
