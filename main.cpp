@@ -305,7 +305,7 @@ PI bottom_find_corner(int dir)
 	if (f[UP][RR+UU]==bc && f[BACK][LL+UU]==sc1 && f[RIGHT][RR+UU]==sc2) return PI(UP,RR+UU);
 	if (f[UP][RR+DD]==bc && f[RIGHT][LL+UU]==sc1 && f[FRONT][RR+UU]==sc2) return PI(UP,RR+DD);
 	if (f[UP][LL+DD]==bc && f[FRONT][LL+UU]==sc1 && f[LEFT][RR+UU]==sc2) return PI(UP,LL+DD);
-	if (f[UP][LL+UU]==bc && f[RIGHT][LL+UU]==sc1 && f[BACK][RR+UU]==sc2) return PI(UP,LL+UU);
+	if (f[UP][LL+UU]==bc && f[LEFT][LL+UU]==sc1 && f[BACK][RR+UU]==sc2) return PI(UP,LL+UU);
 	if (f[FRONT][RR+UU]==bc && f[UP][RR+DD]==sc1 && f[RIGHT][LL+UU]==sc2) return PI(FRONT,RR+UU);
 	if (f[FRONT][RR+DD]==bc && f[RIGHT][LL+DD]==sc1 && f[DOWN][RR+UU]==sc2) return PI(FRONT,RR+DD);
 	if (f[FRONT][LL+UU]==bc && f[LEFT][RR+UU]==sc1 && f[UP][LL+DD]==sc2) return PI(FRONT,LL+UU);
@@ -343,10 +343,11 @@ void bottom_fetch_corner(const PI &from, int to)
 	if (face==LEFT && pos==LL+UU && to==LL+DD)  Spin("LUl"); else
 	if (face==BACK && pos==RR+UU && to==LL+DD)	Spin("buB");  else
 	{
-		if (face==UP && pos==RR+DD)     Spin("RUr"); else
-		if (face==UP && pos==RR+UU)	    Spin("BUb"); else
-		if (face==UP && pos==LL+UU)	    Spin("LUl"); else
-		if (face==UP && pos==LL+DD)	    Spin("FUf"); else
+		if (face==UP && pos==RR+DD && f[DOWN][RR+UU]!=f[DOWN][0]) Spin("Rur"); else
+		if (face==UP && pos==RR+UU && f[DOWN][RR+DD]!=f[DOWN][0]) Spin("Bub"); else
+		if (face==UP && pos==LL+UU && f[DOWN][LL+DD]!=f[DOWN][0]) Spin("Lul"); else
+		if (face==UP && pos==LL+DD && f[DOWN][LL+UU]!=f[DOWN][0]) Spin("Fuf"); else
+		if (face==UP) Spin(UP, 1); else
 		if (face==FRONT && pos==LL+DD)  Spin("FUf"); else
 		if (face==RIGHT && pos==LL+DD)  Spin("RUr"); else
 		if (face==BACK  && pos==LL+DD)  Spin("BUb"); else
