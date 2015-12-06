@@ -480,36 +480,38 @@ void top_fetch_corner1()
 
 void top_fetch_edge2()
 {
-    if(f[FRONT][UU] == f[FRONT][0] && f[LEFT][UU] == f[LEFT][0] && f[BACK][UU] == f[BACK][0] && f[RIGHT][UU] == f[RIGHT][0])
-        return;
-    if(f[FRONT][UU] == f[LEFT][0] && f[RIGHT][UU] == f[FRONT][0] && f[LEFT][UU] == f[RIGHT][0] && f[BACK][UU] == f[BACK][0])
+    int g=0;
+	 for(int i=0;i<=3;i++)
+	    g+=(f[i][UU] == f[i][0]);
+	 if (g == 4) return;
+	 while(f[FRONT][UU] != f[FRONT][0])
     {
-        Spin("FFUrLFFRlUFF");
-        return;
+    	  Spin(UP, 1);
     }
-    if(f[FRONT][UU] == f[RIGHT][0] && f[RIGHT][UU] == f[LEFT][0] &&f[LEFT][UU] == f[FRONT][0] && f[BACK][UU] == f[BACK][0])
-    {
-        Spin("FFurLFFRluFF");
-        return;
-    }
-    Spin(UP, 1);
-    top_fetch_edge2();
+    if (f[BACK][UU] == f[BACK][0]) {Spin("uFFurLFFRluFFLLufBllFbull");return;}
+    if (f[LEFT][UU] == f[LEFT][0]) {Spin("uFFUrLFFRlUFF");return;}
+    if (f[RIGHT][UU] == f[RIGHT][0]) {Spin("UFFurLFFRlUFF");return;}
+    if (f[LEFT][UU] == f[BACK][0]) {Spin("FFurLFFRluFF",2);return;}
+    else {Spin("FFurLFFRluFF",2);return;}
 }
 
 void top_fetch_corner2()
 {
     if(f[FRONT][LL+UU] == f[FRONT][0] && f[FRONT][RR+UU] == f[FRONT][0])
         return;
-    Spin(UP, 1);
-    top_fetch_corner2();
+    if(f[LEFT][LL+UU] == f[FRONT][0] && f[BACK][RR+UU] == f[LEFT][0]) Spin("RRBBRFrBBRfR",2);
+    while( f[FRONT][LL+UU] != f[FRONT][0] || f[LEFT][RR+UU] != f[LEFT][0])
+        Spin("RRBBRFrBBRfR",1);
+    while(f[FRONT][RR+UU] != f[FRONT][0] || f[RIGHT][LL+UU] != f[RIGHT][0])
+        Spin("RRBBRFrBBRfR");
 }
 
 void SolveTop()
 {
     top_fetch_edge1();
     top_fetch_corner1();
-   // top_fetch_edge2();
-   // top_fetch_corner2();
+    top_fetch_edge2();
+    top_fetch_corner2();
 }
 
 void Solve()
