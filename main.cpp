@@ -1,4 +1,5 @@
 #include<cstdio>
+#include<iostream>
 #include<cctype>
 #include<cstring>
 #include<algorithm>
@@ -204,7 +205,7 @@ void Spin(const char *s, int rotateLeft = 0)
 
 int bottom_avoid(int face, int to)
 {
-	int from = 
+	int from =
 		near(DOWN, UU)==face ? UU :
 		near(DOWN, RR)==face ? RR :
 		near(DOWN, DD)==face ? DD :
@@ -333,7 +334,7 @@ void bottom_fetch_corner(const PI &from, int to)
 	int face = from.fi, pos = from.se;
 	fprintf(stderr, "bottom_fetch_corner(from=(face=%d,pos=%d),to=%d)\n", face, pos, to);
 	if (face == DOWN && pos == to) return;
-	
+
 	if (face==FRONT && pos==LL+UU && to==LL+UU) Spin("FUf"); else
 	if (face==LEFT && pos==RR+UU && to==LL+UU)  Spin("luL");  else
 	if (face==RIGHT && pos==LL+UU && to==RR+UU) Spin("RUr"); else
@@ -369,7 +370,7 @@ void middle_fetch_edge(const PI &from, int to)
 {
 	int face = from.fi, pos = from.se;
 	fprintf(stderr, "middle_fetch_edge(from=(face=%d,pos=%d),to=%d)\n", face, pos, to);
-	
+
 	if (face==to && pos==RR)
 		return;
 	if (face==UP && pos==rel_pos_UP(near(to,RR)) && f[near(to,RR)][UU]==f[near(to,RR)][0])
@@ -413,10 +414,109 @@ void SolveMiddle()
 	middle_fetch_edge(middle_find_edge(LEFT ), LEFT );
 }
 
+void top_fetch_edge1()
+{
+    if(f[UP][UU] == f[UP][0] && f[UP][DD] == f[UP][0] && f[UP][LL] == f[UP][0] && f[UP][RR] == f[UP][0])
+        return;
+    if(f[UP][UU] != f[UP][0] && f[UP][DD] != f[UP][0] && f[UP][LL] != f[UP][0] && f[UP][RR] != f[UP][0])
+        Spin("rufUFR");
+    if(f[UP][UU] == f[UP][0] && f[UP][LL] == f[UP][0] && f[UP][DD] != f[UP][0] && f[UP][RR] != f[UP][0])
+        {
+            Spin("rufUFR");
+            return;
+        }
+    if(f[UP][UU] == f[UP][0] && f[UP][LL] != f[UP][0] && f[UP][DD] == f[UP][0] && f[UP][RR] != f[UP][0])
+        {
+            Spin("rfuFUR");
+            return;
+        }
+    Spin(UP, 1);
+    top_fetch_edge1();
+}
+
+void top_fetch_corner1()
+{
+    if(f[UP][LL+UU] == f[UP][0] && f[UP][RR+UU] == f[UP][0] && f[UP][LL+DD] == f[UP][0] && f[UP][RR+DD] == f[UP][0])
+        return;
+    if(f[UP][LL+UU] == f[UP][0] && f[FRONT][LL+UU] == f[UP][0] && f[RIGHT][LL+UU] == f[UP][0])
+    {
+        Spin("rULuRUlu");
+        return;
+    }
+    if(f[UP][LL+UU] == f[UP][0] && f[FRONT][RR+UU] == f[UP][0] && f[RIGHT][RR+UU] == f[UP][0])
+    {
+        Spin("ULurUluR");
+        return;
+    }
+    if(f[UP][LL+UU] == f[UP][0] && f[UP][RR+UU] == f[UP][0] && f[LEFT][RR+UU] == f[UP][0] && f[RIGHT][LL+UU] == f[UP][0])
+    {
+        Spin("FRbrfRBr");
+        return;
+    }
+    if(f[UP][LL+UU] == f[UP][0] && f[UP][RR+UU] == f[UP][0] && f[FRONT][RR+UU] == f[UP][0] && f[FRONT][LL+UU] == f[UP][0])
+    {
+        Spin("RRDrUURdrUUr");
+        return;
+    }
+
+    if(f[UP][RR+UU] == f[UP][0] && f[UP][LL+DD] == f[UP][0] && f[FRONT][RR+UU] == f[UP][0] && f[LEFT][LL+UU] == f[UP][0])
+    {
+        Spin("flFrfLFR");
+        return;
+    }
+    if(f[FRONT][LL+UU] == f[UP][0] && f[FRONT][RR+UU] == f[UP][0] && f[BACK][RR+UU] == f[UP][0] && f[BACK][LL+UU] == f[UP][0])
+    {
+        Spin("RUUruRUruRur");
+        return;
+    }
+    if(f[LEFT][LL+UU] == f[UP][0] && f[LEFT][RR+UU] == f[UP][0] && f[FRONT][RR+UU] == f[UP][0] && f[BACK][LL+UU] == f[UP][0])
+    {
+        Spin("RuuRRuRRuRRuuR");
+        return;
+    }
+    Spin(UP, 1);
+    top_fetch_corner1();
+}
+
+void top_fetch_edge2()
+{
+    if(f[FRONT][UU] == f[FRONT][0] && f[LEFT][UU] == f[LEFT][0] && f[BACK][UU] == f[BACK][0] && f[RIGHT][UU] == f[RIGHT][0])
+        return;
+    if(f[FRONT][UU] == f[LEFT][0] && f[RIGHT][UU] == f[FRONT][0] && f[LEFT][UU] == f[RIGHT][0] && f[BACK][UU] == f[BACK][0])
+    {
+        Spin("FFUrLFFRlUFF");
+        return;
+    }
+    if(f[FRONT][UU] == f[RIGHT][0] && f[RIGHT][UU] == f[LEFT][0] &&f[LEFT][UU] == f[FRONT][0] && f[BACK][UU] == f[BACK][0])
+    {
+        Spin("FFurLFFRluFF");
+        return;
+    }
+    Spin(UP, 1);
+    top_fetch_edge2();
+}
+
+void top_fetch_corner2()
+{
+    if(f[FRONT][LL+UU] == f[FRONT][0] && f[FRONT][RR+UU] == f[FRONT][0])
+        return;
+    Spin(UP, 1);
+    top_fetch_corner2();
+}
+
+void SolveTop()
+{
+    top_fetch_edge1();
+    top_fetch_corner1();
+   // top_fetch_edge2();
+   // top_fetch_corner2();
+}
+
 void Solve()
 {
 	SolveFloor();
 	SolveMiddle();
+	SolveTop();
 }
 
 int main()
@@ -425,4 +525,3 @@ int main()
 	Solve();
 	return 0;
 }
-
