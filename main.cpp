@@ -53,7 +53,7 @@ int color_to_int(char c)
 
 void Output()
 {
-	putchar('\n');
+	fputc('\n', stderr);
 	for (int i=0; i<6; i++)
 	{
 		fprintf(stderr, "Face %s:\n", name[i]);
@@ -547,17 +547,18 @@ void random_init()
 				*_f[i][j][k] = i;
 	for (int i=0; i<1000; i++)
 		Spin(rand()%6, 1);
-	puts("Initial State:\n");
+	FILE *dump = fopen("dump.txt", "w");
 	for (int i=0; i<6; i++)
 	{
 		for (int j=0; j<3; j++)
 		{
 			for (int k=0; k<3; k++)
-				putchar(tolower(color[*_f[i][j][k]][0]));
-			putchar('\n');
+				fputc(tolower(color[*_f[i][j][k]][0]), dump);
+			fputc('\n', dump);
 		}
-		putchar('\n');
+		fputc('\n', dump);
 	}
+	fclose(dump);
 }
 
 void test_check()
@@ -565,7 +566,7 @@ void test_check()
 	for (int i=0; i<6; i++)
 		for (int j=0; j<3; j++)
 			for (int k=0; k<3; k++)
-				assert(*_f[i][j][k] = i);
+				assert(*_f[i][j][k] == i);
 }
 
 void test()
