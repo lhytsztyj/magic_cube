@@ -1,5 +1,7 @@
+#include<ctime>
 #include<cstdio>
 #include<cctype>
+#include<cassert>
 #include<cstring>
 #include<algorithm>
 using namespace std;
@@ -50,11 +52,22 @@ int color_to_int(char c)
 
 void Output()
 {
+	putchar('\n');
 	for (int i=0; i<6; i++)
 	{
 		fprintf(stderr, "Face %s:\n", name[i]);
 		for (int j=0; j<3; j++)
 			fprintf(stderr, "%d %d %d\n", *_f[i][j][0], *_f[i][j][1], *_f[i][j][2]);
+	}
+}
+
+void preInit()
+{
+	for (int i=0; i<6; i++)
+	{
+		_f[i][0][0] = &f[i][LL+UU],		_f[i][0][1] = &f[i][UU],	_f[i][0][2] = &f[i][RR+UU];
+		_f[i][1][0] = &f[i][LL],		_f[i][1][1] = &f[i][0],		_f[i][1][2] = &f[i][RR];
+		_f[i][2][0] = &f[i][LL+DD],		_f[i][2][1] = &f[i][DD],	_f[i][2][2] = &f[i][RR+DD];
 	}
 }
 
@@ -71,9 +84,6 @@ void Init()
 				&f[i][LL],		&f[i][0],	&f[i][RR],
 				&f[i][LL+DD],	&f[i][DD],	&f[i][RR+DD]
 			 );*/
-		_f[i][0][0] = &f[i][LL+UU],		_f[i][0][1] = &f[i][UU],	_f[i][0][2] = &f[i][RR+UU];
-		_f[i][1][0] = &f[i][LL],		_f[i][1][1] = &f[i][0],		_f[i][1][2] = &f[i][RR];
-		_f[i][2][0] = &f[i][LL+DD],		_f[i][2][1] = &f[i][DD],	_f[i][2][2] = &f[i][RR+DD];
 		for (int j=0; j<3; j++)
 			for (int k=0; k<3; k++)
 			{
@@ -151,9 +161,15 @@ void Circle(int **data1, int offset1, int **data2, int offset2, int **data3, int
 // Spin(face, t) : Spin `face` clock-wise `t` times
 void Spin(int face, int t)
 {
-	if (!t) return;
-	printf("\nSpin %s %d times:\n", name[face], t);
+	//printf("\nSpin %s %d times:\n", name[face], t);
 	t = (t%4+4)%4;
+	if (!t) return;
+	switch (t)
+	{
+		case 1: putchar(name[face][0]); break;
+		case 2: putchar(name[face][0]), putchar(name[face][0]); break;
+		case 3: putchar(tolower(name[face][0])); break;
+	}
 	while (t--)
 	{
 		SpinCW(face);
@@ -419,10 +435,58 @@ void Solve()
 	SolveMiddle();
 }
 
+#ifdef TEST
+void random_init()
+{
+	srand(time(0));
+	for (int i=0; i<6; i++)
+		for (int j=0; j<3; j++)
+			for (int k=0; k<3; k++)
+				*_f[i][j][k] = i;
+	for (int i=0; i<1000; i++)
+		Spin(rand()%6, 1);
+	puts("Initial State:\n");
+	for (int i=0; i<6; i++)
+	{
+		for (int j=0; j<3; j++)
+		{
+			for (int k=0; k<3; k++)
+				putchar(tolower(color[*_f[i][j][k]][0]));
+			putchar('\n');
+		}
+		putchar('\n');
+	}
+}
+
+void test_check()
+{
+	for (int i=0; i<6; i++)
+		for (int j=0; j<3; j++)
+			for (int k=0; k<3; k++)
+				assert(*_f[i][j][k] = i);
+}
+
+void test()
+{
+	for (int i=0; i<100000; i++)
+	{
+		random_init();
+		Solve();
+		test_check();
+		printf("%d: OK\n", i);
+	}
+}
+#endif
+
 int main()
 {
+	preInit();
+#ifdef TEST
+	test();
+#else
 	Init();
 	Solve();
+#endif
 	return 0;
 }
 
