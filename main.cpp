@@ -497,13 +497,14 @@ void top_fetch_corner1()
 void top_fetch_edge2()
 {
     int g=0;
-	 for(int i=0;i<=3;i++)
-	    g+=(f[i][UU] == f[i][0]);
-	 if (g == 4) return;
+	 
 	 while(f[FRONT][UU] != f[FRONT][0])
     {
     	  Spin(UP, 1);
     }
+    for(int i=0;i<=3;i++)
+	    g+=(f[i][UU] == f[i][0]);
+	 if (g == 4) return;
     if (f[BACK][UU] == f[BACK][0]) {Spin("uFFurLFFRluFFLLufBllFbull");return;}
     if (f[LEFT][UU] == f[LEFT][0]) {Spin("uFFUrLFFRlUFF");return;}
     if (f[RIGHT][UU] == f[RIGHT][0]) {Spin("UFFurLFFRlUFF");return;}
