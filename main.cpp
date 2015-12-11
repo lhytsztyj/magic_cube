@@ -5,6 +5,7 @@
 #include<cassert>
 #include<cstring>
 #include<algorithm>
+#include<cstdlib>
 using namespace std;
 
 // face
@@ -93,6 +94,7 @@ void Init()
 				*_f[i][j][k] = color_to_int(c);
 			}
 	}
+	freopen("CON", "r", stdin);
 	Output();
 }
 
@@ -477,7 +479,7 @@ void top_fetch_corner1()
 
     if(f[UP][RR+UU] == f[UP][0] && f[UP][LL+DD] == f[UP][0] && f[FRONT][RR+UU] == f[UP][0] && f[LEFT][LL+UU] == f[UP][0])
     {
-        Spin("flFrfLFR");
+        Spin("fLFrflFR");
         return;
     }
     if(f[FRONT][LL+UU] == f[UP][0] && f[FRONT][RR+UU] == f[UP][0] && f[BACK][RR+UU] == f[UP][0] && f[BACK][LL+UU] == f[UP][0])
@@ -497,19 +499,19 @@ void top_fetch_corner1()
 void top_fetch_edge2()
 {
     int g=0;
-	 
-	 while(f[FRONT][UU] != f[FRONT][0])
+
+    while(f[FRONT][UU] != f[FRONT][0])
     {
     	  Spin(UP, 1);
     }
     for(int i=0;i<=3;i++)
 	    g+=(f[i][UU] == f[i][0]);
-	 if (g == 4) return;
+    if (g == 4) return;
     if (f[BACK][UU] == f[BACK][0]) {Spin("uFFurLFFRluFFLLufBllFbull");return;}
     if (f[LEFT][UU] == f[LEFT][0]) {Spin("uFFUrLFFRlUFF");return;}
-    if (f[RIGHT][UU] == f[RIGHT][0]) {Spin("UFFurLFFRlUFF");return;}
-    if (f[LEFT][UU] == f[BACK][0]) {Spin("FFurLFFRluFF",2);return;}
-    else {Spin("FFurLFFRluFF",2);return;}
+    if (f[RIGHT][UU] == f[RIGHT][0]) {Spin("UFFurLFFRluFF");return;}
+    if (f[LEFT][UU] == f[BACK][0]) {Spin("rUrururURUrr");return;}
+    else {Spin("LuLULULuluLL");return;}
 }
 
 void top_fetch_corner2()
