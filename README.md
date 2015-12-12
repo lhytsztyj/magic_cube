@@ -8,7 +8,7 @@
 `make debug`： 编译程序到main。附加-g -Wall选项。
 
 `make test`： 编译测试程序到test。执行test可自动测试多组随机数据，
-并将正在测试的魔方的初始状态dump到main.in。
+并将正在测试的魔方的初始状态dump到dump.txt。
 
 运行
 -------
