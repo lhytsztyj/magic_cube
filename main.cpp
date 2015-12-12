@@ -59,7 +59,7 @@ void Output()
 	{
 		fprintf(stderr, "Face %s:\n", name[i]);
 		for (int j=0; j<3; j++)
-			fprintf(stderr, "%d %d %d\n", *_f[i][j][0], *_f[i][j][1], *_f[i][j][2]);
+			fprintf(stderr, "%s\t\t%s\t\t%s\n", color[*_f[i][j][0]], color[*_f[i][j][1]], color[*_f[i][j][2]]);
 	}
 }
 
@@ -75,7 +75,7 @@ void preInit()
 
 void Init()
 {
-	fputs("Colors:", stderr);
+	//fputs("Colors:", stderr);
 	//for (int i=0; i<6; i++)
 	//	fprintf(stderr, "%d for %s\n", i, color[i]);
 	for (int i=0; i<6; i++)
@@ -171,7 +171,7 @@ void Spin(int face, int t)
 	{
 		case 1: putchar(name[face][0]); break;
 		case 2: putchar(name[face][0]), putchar(name[face][0]); break;
-		case 3: putchar(tolower(name[face][0])); break;
+		case 3: putchar(name[face][0]), putchar('i'); break;
 	}
 	while (t--)
 	{
@@ -274,7 +274,7 @@ inline PI middle_find_edge(int f1)
 void bottom_fetch_edge(const PI &from, int to)
 {
 	int face = from.fi, pos = from.se;
-	fprintf(stderr, "bottom_fetch_edge(from=(face=%d,pos=%d),to=%d)\n", face, pos, to);
+	//fprintf(stderr, "bottom_fetch_edge(from=(face=%d,pos=%d),to=%d)\n", face, pos, to);
 	if (face==DOWN && pos==to) return;
 	if (face==DOWN)
 	{
@@ -350,7 +350,7 @@ PI bottom_find_corner(int dir)
 void bottom_fetch_corner(const PI &from, int to)
 {
 	int face = from.fi, pos = from.se;
-	fprintf(stderr, "bottom_fetch_corner(from=(face=%d,pos=%d),to=%d)\n", face, pos, to);
+	//fprintf(stderr, "bottom_fetch_corner(from=(face=%d,pos=%d),to=%d)\n", face, pos, to);
 	if (face == DOWN && pos == to) return;
 
 	if (face==FRONT && pos==LL+UU && to==LL+UU) Spin("FUf"); else
@@ -387,7 +387,7 @@ void bottom_fetch_corner(const PI &from, int to)
 void middle_fetch_edge(const PI &from, int to)
 {
 	int face = from.fi, pos = from.se;
-	fprintf(stderr, "middle_fetch_edge(from=(face=%d,pos=%d),to=%d)\n", face, pos, to);
+	//fprintf(stderr, "middle_fetch_edge(from=(face=%d,pos=%d),to=%d)\n", face, pos, to);
 
 	if (face==to && pos==RR)
 		return;
@@ -543,7 +543,6 @@ void Solve()
 #ifdef TEST
 void random_init()
 {
-	srand(time(0));
 	for (int i=0; i<6; i++)
 		for (int j=0; j<3; j++)
 			for (int k=0; k<3; k++)
@@ -574,6 +573,7 @@ void test_check()
 
 void test()
 {
+	srand(time(0));
 	for (int i=0; i<100000; i++)
 	{
 		random_init();
