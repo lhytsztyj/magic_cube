@@ -29,6 +29,8 @@ using namespace std;
 #define DD 4
 #define RR 8
 
+const int inputOrder[] = { FRONT, BACK, LEFT, RIGHT, UP, DOWN };
+
 const char name[6][10] = { "FRONT", "LEFT", "BACK", "RIGHT", "UP", "DOWN" };
 const char color[6][10] = {"RED", "BLUE", "ORANGE", "GREEN", "YELLOW", "WHITE" };
 
@@ -54,6 +56,7 @@ int color_to_int(char c)
 
 void Output()
 {
+#ifdef VERBOSE
 	fputc('\n', stderr);
 	for (int i=0; i<6; i++)
 	{
@@ -61,6 +64,7 @@ void Output()
 		for (int j=0; j<3; j++)
 			fprintf(stderr, "%s\t\t%s\t\t%s\n", color[*_f[i][j][0]], color[*_f[i][j][1]], color[*_f[i][j][2]]);
 	}
+#endif
 }
 
 void preInit()
@@ -80,7 +84,9 @@ void Init()
 	//	fprintf(stderr, "%d for %s\n", i, color[i]);
 	for (int i=0; i<6; i++)
 	{
-		fprintf(stderr, "Input %s\n", name[i]);
+#ifdef VERBOSE
+		fprintf(stderr, "Input %s\n", name[inputOrder[i]]);
+#endif
 		/*scanf("%d%d%d%d%d%d%d%d%d",
 				&f[i][LL+UU],	&f[i][UU],	&f[i][RR+UU],
 				&f[i][LL],		&f[i][0],	&f[i][RR],
@@ -91,7 +97,7 @@ void Init()
 			{
 				char c;
 				scanf(" %c", &c);
-				*_f[i][j][k] = color_to_int(c);
+				*_f[inputOrder[i]][j][k] = color_to_int(c);
 			}
 	}
 	freopen("CON", "r", stdin);
@@ -173,6 +179,7 @@ void Spin(int face, int t)
 		case 2: putchar(name[face][0]), putchar(name[face][0]); break;
 		case 3: putchar(name[face][0]), putchar('i'); break;
 	}
+	putchar('\n');
 	while (t--)
 	{
 		SpinCW(face);
